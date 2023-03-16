@@ -30,9 +30,21 @@ const common = {
     rules: [
       // Check for TypeScript files
       {
-        test: /\.ts$/,
+        test: /\.tsx?$/,
         use: ['ts-loader'],
       },
+      {
+        test: /\.s[ac]ss$/i,
+        use: [
+          // Creates `style` nodes from JS strings
+          "style-loader",
+          // Translates CSS into CommonJS
+          "css-loader",
+          // Compiles Sass to CSS
+          "sass-loader",
+        ],
+      },
+
       // Help webpack in understanding CSS files imported in .js files
       {
         test: /\.css$/,
@@ -55,7 +67,7 @@ const common = {
   },
   resolve: {
     // Help webpack resolve these extensions in order
-    extensions: ['.ts', '.js'],
+    extensions: ['.ts', '.js', '.tsx'],
   },
   plugins: [
     // Copy static assets from `public` folder to `build` folder
