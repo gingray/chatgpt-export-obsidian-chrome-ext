@@ -12,7 +12,7 @@ export const App = () => {
   }
   return (<div className={'app-container'}>
     <Container fluid={true}>
-      <h1>ChatGTP content exporter v0.01</h1>
+      <h1>ChatGTP to Obsidian content exporter v0.01</h1>
       <CopyBtn setMessages={addLog}/>
       <MessageBus data={messages}/>
     </Container>

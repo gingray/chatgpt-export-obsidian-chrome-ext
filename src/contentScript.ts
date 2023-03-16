@@ -13,7 +13,7 @@ chrome.runtime.onMessage.addListener(
     const items: Array<Conversation> = []
     for (const item of data) {
       if (item.classList.contains("bg-gray-50")) {
-        const innerData = item.querySelectorAll(".markdown.prose > p, ol, ul")
+        const innerData = item.querySelectorAll(".markdown.prose > p, .markdown.prose > ol, .markdown.prose > ul")
         console.log("innerData", innerData)
         const values = Array.from(innerData).map<ContentPayload>((value) => {
           console.log("value tag name", value.tagName)
