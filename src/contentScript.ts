@@ -1,44 +1,38 @@
 'use strict';
+const processList = ({node}:{node: Element}) : ContentPayload[] => {
+  const result: ContentPayload[] = []
+  for (const item of node.querySelectorAll("li")) {
+    result.push({contentType:"li", value: item.textContent!})
+  }
+  return result
+}
+chrome.runtime.onMessage.addListener(
+  function(request, sender, sendResponse) {
+    console.log("get request", request, sender)
+    const data = document.querySelectorAll(".group.w-full")
+    const items: Array<Conversation> = []
+    for (const item of data) {
+      if (item.classList.contains("bg-gray-50")) {
+        const innerData = item.querySelectorAll(".markdown.prose > p, .markdown.prose > ol, .markdown.prose > ul")
+        console.log("innerData", innerData)
+        const values = Array.from(innerData).map<ContentPayload>((value) => {
+          console.log("value tag name", value.tagName)
+          if (value.tagName === "OL"){
+            return {contentType:"ol", value: processList({node: value})}
+          }
+          if (value.tagName === "UL"){
+            return {contentType:"ul", value: processList({node: value})}
+          }
+          return {contentType:"p", value: value.textContent!}
 
-// Content script file will run in the context of web page.
-// With content script you can manipulate the web pages using
-// Document Object Model (DOM).
-// You can also pass information to the parent extension.
-
-// We execute this script by making an entry in manifest.json file
-// under `content_scripts` property
-
-// For more information on Content Scripts,
-// See https://developer.chrome.com/extensions/content_scripts
-
-// Log `title` of current active web page
-const pageTitle: string =
-  document.head.getElementsByTagName('title')[0].innerHTML;
-console.log(
-  `Page title is: '${pageTitle}' - evaluated by Chrome extension's 'contentScript.js' file`
-);
-
-// Communicate with background file by sending a message
-chrome.runtime.sendMessage(
-  {
-    type: 'GREETINGS',
-    payload: {
-      message: 'Hello, my name is Con. I am from ContentScript.',
-    },
-  },
-  (response) => {
-    console.log(response.message);
+        })
+        items.push({conversationType: "bot", content: {contentType: "root", value: values}})
+      }else{
+        items.push({conversationType: "user", content: {contentType: "root", value: {contentType:"p", value: item.textContent!}}})
+      }
+    }
+    console.log("this is items", items)
+    console.log("this is request", request, sendResponse)
+    sendResponse({payload: items});
   }
 );
-
-// Listen for message
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.type === 'COUNT') {
-    console.log(`Current count is ${request.payload.count}`);
-  }
-
-  // Send an empty response
-  // See https://github.com/mozilla/webextension-polyfill/issues/130#issuecomment-531531890
-  sendResponse({});
-  return true;
-});
