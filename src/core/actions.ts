@@ -13,10 +13,10 @@ export const sendChromeMessage = async ({addLog}:{addLog:any}) => {
   const buffer = []
   for (const item of items) {
     if (item.conversationType === "bot") {
-      buffer.push("```\n" + item.content.join("") + "\n```")
+      buffer.push("```\n" + buildMd(item.content).trim() + "\n```\n")
     }
     if (item.conversationType === "user") {
-      buffer.push("\n" + item.content.join("") + "  \n")
+      buffer.push(buildMd(item.content).trim() + "  \n")
     }
   }
   // do something with response here, not outside the function
@@ -27,4 +27,35 @@ export const sendChromeMessage = async ({addLog}:{addLog:any}) => {
     console.error('Failed to copy: ', err);
   }
 }
+
+const buildMd = (node: ContentPayload,bot?: boolean) => {
+  return `${processNode(node)}`
+}
+
+const processNode = (node: ContentPayload, bot?: boolean): string => {
+  if (node.value instanceof Array) {
+    return processArray(node.value)
+  }
+
+  if (typeof node.value === "string") {
+    let line = `${node.value}  \n`
+    if (node.contentType === "li") line = `* ${line}`
+    if (node.contentType === "p") line = `${line}  \n`
+
+    return line
+  }
+
+  return processNode(node.value as ContentPayload)
+}
+
+const processArray = (nodes: ContentPayload[]):string => {
+  const buff = []
+  for (const node  of nodes) {
+    buff.push(processNode(node))
+  }
+  buff.push("  \n")
+  return buff.join("")
+}
+
+
 
