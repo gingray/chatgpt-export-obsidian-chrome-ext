@@ -8,5 +8,5 @@ const onClick = ({addLog}:{addLog:(t:string) => void}) => {
 
 export const CopyBtn = ({setMessages}:{setMessages: any}) => {
 
-  return (<Button onClick={() => onClick({addLog: setMessages})} size={"lg"}>Copy ChatGPT session to clipboard</Button>)
+  return (<Button onClick={() => onClick({addLog: setMessages})} size={"lg"}>Copy to clipboard</Button>)
 }

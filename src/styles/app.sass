@@ -1,4 +1,22 @@
 @import "~bootstrap/scss/bootstrap"
 
+body
+  background-color: #f0f3fa
 .app-container
+  @extend .d-flex
+  @extend .flex-row
+  @extend .justify-content-center
+  @extend .align-items-center
+  @extend .m-2
+  @extend .mb-3
+  @extend .mt-3
   min-width: 400px
+
+  h1
+    @extend .mb-3
+
+  .copy-btn-container
+    text-align: center
+  .message-bus-container
+    @extend .mt-3
+    text-align: center
