@@ -1,6 +1,6 @@
 import React, {Dispatch} from "react";
 import {Button} from "react-bootstrap";
-import {sendChromeMessage} from "../core/actions";
+import {sendChromeMessage} from "../core/chromeMessage";
 
 const onClick = ({addLog}:{addLog:(t:string) => void}) => {
   sendChromeMessage({addLog}).then(() => console.log("success executed"))

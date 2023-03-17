@@ -1,13 +1,21 @@
-'use strict';
+'use strict'
 import {parseContent} from "./core/parseContent";
-
+import {ChromeMessage} from "./core/chromeMessage";
+import {PingMessage, ExportMessage, AliveMessage} from "./core/actions";
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
-    console.log("get request", request, sender)
-    const data = document.querySelectorAll(".group.w-full")
-    const items: Array<Conversation> = parseContent(data)
-    console.log("this is items", items)
-    console.log("this is request", request, sendResponse)
-    sendResponse({payload: items});
+    const msg = request as ChromeMessage
+    console.log("content script requirest", request)
+    if (msg.message == ExportMessage) {
+      const data = document.querySelectorAll(".group.w-full")
+      const items: Array<Conversation> = parseContent(data)
+      sendResponse({payload: items});
+    }
+
+    if (msg.message == PingMessage) {
+      const msg = {message: AliveMessage}
+      sendResponse(msg);
+    }
   }
 );
+

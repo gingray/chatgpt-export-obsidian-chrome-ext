@@ -1,7 +1,7 @@
 {
   "name": "chatgpt-md-export",
   "version": "0.1.0",
-  "description": "My Chrome Extension",
+  "description": "ChatGPT to Obsidian MD",
   "private": true,
   "scripts": {
     "watch": "webpack --mode=development --watch --config config/webpack.config.js",

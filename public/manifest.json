@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Chatgpt Md Export",
+  "name": "ChatGPT Obsidian Export",
   "version": "0.1.0",
-  "description": "My Chrome Extension",
+  "description": "Extension to export chats to Obsidian Markdown format",
   "icons": {
     "16": "icons/icon_16.png",
     "32": "icons/icon_32.png",
@@ -13,19 +13,17 @@
     "service_worker": "background.js"
   },
   "action": {
-    "default_title": "Chatgpt Md Export",
+    "default_title": "ChatGPT Obsidian Export",
     "default_popup": "popup.html"
   },
   "permissions": [
     "storage",
-    "activeTab",
-    "tabs",
-    "scripting"
+    "activeTab"
   ],
   "content_scripts": [
     {
       "matches": [
-        "<all_urls>"
+        "https://chat.openai.com/chat*"
       ],
       "run_at": "document_idle",
       "js": [
