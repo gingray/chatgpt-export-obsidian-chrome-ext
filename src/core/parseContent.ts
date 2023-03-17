@@ -8,9 +8,9 @@ export const parseContent = (data : NodeListOf<Element>): Array<Conversation> =>
   for (const item of data) {
     if (item.classList.contains("bg-gray-50")) {
       const innerData = item.querySelectorAll(".markdown.prose > p, .markdown.prose > ol, .markdown.prose > ul")
-      console.log("innerData", innerData)
+      // debugger
       const values = Array.from(innerData).map<ContentPayload>((value) => {
-        console.log("value tag name", value.tagName)
+        // console.log("value tag name", value.tagName)
         if (compareStr(value.tagName, OL_TAG)){
           return {contentType:"ol", value: processList(value)}
         }
