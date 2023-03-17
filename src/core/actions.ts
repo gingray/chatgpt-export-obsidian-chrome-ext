@@ -1,3 +1,5 @@
+import {buildMd} from "./markdownTransform";
+
 export const sendChromeMessage = async ({addLog}:{addLog:any}) => {
   console.log("execute send message")
   const [tab] = await chrome.tabs.query({active: true, lastFocusedWindow: true});
@@ -13,10 +15,10 @@ export const sendChromeMessage = async ({addLog}:{addLog:any}) => {
   const buffer = []
   for (const item of items) {
     if (item.conversationType === "bot") {
-      buffer.push("> [!example]- Answer \n" + buildMd(item.content, true).trim() + "  \n\n")
+      buffer.push("> [!example]- Answer \n" + buildMd(item.content, { dialogType: "bot", parentElement: "root", level: 0 }).trim() + "  \n\n")
     }
     if (item.conversationType === "user") {
-      buffer.push(buildMd(item.content).trim() + "  \n")
+      buffer.push(buildMd(item.content, { dialogType: "user", level: 0, parentElement: "root" }).trim() + "  \n")
     }
   }
   // do something with response here, not outside the function
@@ -27,37 +29,5 @@ export const sendChromeMessage = async ({addLog}:{addLog:any}) => {
     console.error('Failed to copy: ', err);
   }
 }
-
-const buildMd = (node: ContentPayload, bot = false) => {
-  return `${processNode(node, bot)}`
-}
-
-const processNode = (node: ContentPayload, bot?: boolean): string => {
-  if (node.value instanceof Array) {
-    return processArray(node.value, bot)
-  }
-
-  if (typeof node.value === "string") {
-    let line = `${node.value}  \n`
-    if (node.contentType === "li") line = `* ${line}`
-    if (node.contentType === "p") line = `${line}`
-    if (bot) line = `> ${line}`
-    return line
-  }
-
-  return processNode(node.value as ContentPayload)
-}
-
-const processArray = (nodes: ContentPayload[], bot = false):string => {
-  const buff = []
-  for (const node  of nodes) {
-    buff.push(processNode(node, bot))
-  }
-  let emptyLine = "  \n"
-  if (bot) emptyLine = `> ${emptyLine}`
-  buff.push(emptyLine)
-  return buff.join("")
-}
-
 
 
