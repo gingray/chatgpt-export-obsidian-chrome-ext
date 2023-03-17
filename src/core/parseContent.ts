@@ -9,20 +9,12 @@ export const parseContent = (data : NodeListOf<Element>): Array<Conversation> =>
     if (item.classList.contains("bg-gray-50")) {
       const innerData = item.querySelectorAll(".markdown.prose > p, .markdown.prose > ol, .markdown.prose > ul")
       // debugger
-      const values = Array.from(innerData).map<ContentPayload>((value) => {
-        // console.log("value tag name", value.tagName)
-        if (compareStr(value.tagName, OL_TAG)){
-          return {contentType:"ol", value: processList(value)}
-        }
-        if (compareStr(value.tagName, UL_TAG)){
-          return {contentType:"ul", value: processList(value)}
-        }
-        return {contentType:"p", value: value.textContent!}
-
+      const values = Array.from(innerData).map<ContentPayload>((value:Element) => {
+        return processNode(value)
       })
-      items.push({conversationType: "bot", content: {contentType: "root", value: values}})
+      items.push({conversationType: "bot", content: {contentType: "root", value: null, children: values}})
     }else{
-      items.push({conversationType: "user", content: {contentType: "root", value: {contentType:"p", value: item.textContent!}}})
+      items.push({conversationType: "user", content: {contentType: "root", value: null, children:[{contentType:"text", value: item.textContent!, children:[]}]}})
     }
   }
   return items
@@ -30,39 +22,41 @@ export const parseContent = (data : NodeListOf<Element>): Array<Conversation> =>
 
 const compareStr = (str1:string, str2:string) => str1.toLowerCase() === str2.toLowerCase()
 
-const processList = (node: Node, contentPayload: ContentPayload|null = null) : ContentPayload[] => {
+const processNode = (node: Element):ContentPayload => {
+  if (compareStr(node.tagName, OL_TAG)){
+    return {contentType:"ol", value: null, children: processList(node)}
+  }
+  if (compareStr(node.tagName, UL_TAG)){
+    return {contentType:"ul", value:null, children: processList(node)}
+  }
+  return {contentType:"text", value: node.textContent!, children: []}
+
+}
+
+const processList = (node: Node) : ContentPayload[] => {
   const result: ContentPayload[] = []
   for (const item of node.childNodes) {
     if (compareStr(item.nodeName, LI_TAG)) {
-      if (contentPayload == null) contentPayload = {contentType: "li", value: []}
-      result.push(processLiTag(item, contentPayload))
+      result.push(processLiTag(item))
     }
   }
   return result
 }
 
-const processLiTag = (node:ChildNode, contentPayload: ContentPayload):ContentPayload => {
+const processLiTag = (node:ChildNode):ContentPayload => {
+  const result = {contentType: "li" as const, value: null, children: [] as ContentPayload[]}
   for( const item of node.childNodes) {
     if (item.nodeType === Node.TEXT_NODE) {
-      if (contentPayload.value instanceof  Array) {
-        contentPayload.value.push({contentType:"li", value: item.textContent!})
-      }
+      result.children.push({contentType:"text", value: item.textContent!, children: []})
       continue
     }
     if (compareStr(item.nodeName, OL_TAG) || compareStr(item.nodeName, UL_TAG)) {
-      if (contentPayload.value instanceof Array) {
-        const newValue = {
-          contentType: 'ul',
-          value: [] as ContentPayload[]
-        } as ContentPayload
-        contentPayload.value.push(newValue)
-        for (const el of processList(item, newValue)) {
-          contentPayload.value.push(el)
+        for (const el of processList(item)) {
+          result.children.push(el)
         }
-      }
     }
   }
-  return contentPayload
+  return result
 }
 
 

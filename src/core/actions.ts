@@ -15,10 +15,10 @@ export const sendChromeMessage = async ({addLog}:{addLog:any}) => {
   const buffer = []
   for (const item of items) {
     if (item.conversationType === "bot") {
-      buffer.push("> [!example]- Answer \n" + buildMd(item.content, { dialogType: "bot", parentElement: "root", level: 0 }).trim() + "  \n\n")
+      buffer.push(buildMd(item.content, { dialogType: "bot", parentElement: ["root"], level: 0 }))
     }
     if (item.conversationType === "user") {
-      buffer.push(buildMd(item.content, { dialogType: "user", level: 0, parentElement: "root" }).trim() + "  \n")
+      buffer.push(buildMd(item.content, { dialogType: "user", level: 0, parentElement: ["root"] }))
     }
   }
   // do something with response here, not outside the function

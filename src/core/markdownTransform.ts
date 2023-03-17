@@ -2,7 +2,7 @@ type DialogType = "bot" | "user"
 
 type TransformContext = {
   dialogType: DialogType
-  parentElement: ContentType
+  parentElement: ContentType[]
   level: number
 }
 
@@ -11,31 +11,36 @@ const MD_LIST_TOKEN = "* "
 const MD_NEW_LINE = "  \n"
 
 export const buildMd = (node: ContentPayload, ctx: TransformContext) => {
-  return `${processNode(node, ctx)}`
+  const buffer = [""]
+  if (ctx.dialogType == "bot") buffer.push("> [!example]- Answer \n")
+  buffer.push(processNode(node, ctx).trim(),"  \n\n")
+  return buffer.join("")
 }
 
 const processNode = (node: ContentPayload, ctx: TransformContext): string => {
-  if (node.value instanceof Array) {
-    return processArray(node.value, ctx)
-  }
-
-  if (typeof node.value === "string") {
-    let line = `${node.value}${MD_NEW_LINE}`
-    if (node.contentType === "li") line = `${MD_LIST_TOKEN}${line}`
+  if (node.contentType === "text") {
+    let line = `${node.value}`
+    line = line.replace(/[\r\n ]+/g, " ");
+    if (ctx.parentElement[0] === "li") {
+      let nestedSpace = ""
+      if (ctx.level > 1) nestedSpace = " ".repeat(ctx.level)
+      line = `${nestedSpace}${MD_LIST_TOKEN}${line}`
+    }
     if (ctx.dialogType === "bot") line = `${OBS_CALLOUT_TOKEN}${line}`
-    return line
+    return line.trim() + MD_NEW_LINE
   }
-
-  return processNode(node.value as ContentPayload, ctx)
-}
-
-const processArray = (nodes: ContentPayload[], ctx: TransformContext):string => {
-  const buff = []
-  for (const node  of nodes) {
-    buff.push(processNode(node, ctx))
+  const buffer = []
+  if (node.contentType == "li") ctx.level +=1
+  for (const child of node.children) {
+    ctx.parentElement.unshift(node.contentType)
+    buffer.push(processNode(child, ctx))
+    ctx.parentElement.shift()
   }
-  let emptyLine = MD_NEW_LINE
-  if (ctx.dialogType === "bot") emptyLine = `${OBS_CALLOUT_TOKEN}${MD_NEW_LINE}`
-  buff.push(emptyLine)
-  return buff.join("")
+  if (node.contentType == "li") ctx.level -=1
+  if ((node.contentType == "ul" || node.contentType == "ol") && ctx.level == 0) buffer.push(`${OBS_CALLOUT_TOKEN}${MD_NEW_LINE}`)
+
+  // let emptyLine = MD_NEW_LINE
+  // if (ctx.dialogType === "bot") emptyLine = `${OBS_CALLOUT_TOKEN}${MD_NEW_LINE}`
+  // buffer.push(emptyLine)
+  return buffer.join("")
 }
