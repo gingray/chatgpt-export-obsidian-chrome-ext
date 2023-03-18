@@ -1,0 +1,38 @@
+$base-size: 8px
+
+$size-1: $base-size
+$size-2: $size-1 + $base-size
+$size-3: $size-2 + $base-size
+$size-4: $size-3 + $base-size
+$size-5: $size-4 + $base-size
+$size-6: $size-5 + $base-size
+
+//$sizes: ($size-1, $size-2, $size-3, $size-4, $size-5, $size-6)
+$base-size: 8px
+$sizes: ()
+$size-num: 6
+$margins: ("mt":"margin-top", "mb":"margin-bottom", "ml": "margin-left", "mr": "margin-right", "m": "margin")
+$paddings: ("pt":"padding-top", "pb":"padding-bottom", "pl": "padding-left", "pr": "padding-right", "p": "padding")
+$line-heights: ()
+
+@for $i from 1 through $size-num
+  $sizes: append($sizes, $i * $base-size)
+@for $i from 1 through $size-num
+  $line-heights: append($line-heights, 150% - (10% * ($i - 1)))
+
+
+@for $i from 1 through length($sizes)
+  $size: nth($sizes, $i)
+  //@error "sizes i #{$i} size #{$size}"
+  @each $key, $val in $margins
+    .#{$key}-#{$i}
+      #{$val}: #{$size}
+
+@for $i from 1 through $size-num
+  h#{length($sizes) - $i + 1}
+    font-size: nth($sizes,$i)
+    line-height: nth($line-heights,$i)
+body
+  font-size: nth($sizes, 2)
+  line-height: 150%
+//@error "here is sizes: #{$sizes}"
