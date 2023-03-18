@@ -50,11 +50,18 @@ const processLiTag = (node:ChildNode):ContentPayload => {
       result.children.push({contentType:"text", value: item.textContent!, children: []})
       continue
     }
+
+    if (compareStr(item.nodeName, P_TAG)) {
+      result.children.push({contentType:"text", value: item.textContent!, children: []})
+      continue
+    }
+
     if (compareStr(item.nodeName, OL_TAG) || compareStr(item.nodeName, UL_TAG)) {
         for (const el of processList(item)) {
           result.children.push(el)
         }
     }
+
   }
   return result
 }

@@ -27,7 +27,7 @@ export const sendChromeMessage = async ({addLog}:{addLog:any}) => {
   // do something with response here, not outside the function
   try {
     await navigator.clipboard.writeText(buffer.join(""));
-    addLog("Content copy to Clipboard")
+    addLog("The content has been copied to the Clipboard.")
   } catch (err) {
     console.error('Failed to copy: ', err);
   }
