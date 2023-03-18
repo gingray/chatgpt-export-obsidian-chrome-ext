@@ -1,5 +1,4 @@
 import React, {Dispatch} from "react";
-import {Button} from "react-bootstrap";
 import {sendChromeMessage} from "../core/chromeMessage";
 
 const onClick = ({addLog}:{addLog:(t:string) => void}) => {
@@ -8,5 +7,5 @@ const onClick = ({addLog}:{addLog:(t:string) => void}) => {
 
 export const CopyBtn = ({setMessages}:{setMessages: any}) => {
 
-  return (<Button onClick={() => onClick({addLog: setMessages})} size={"lg"}>Copy to clipboard</Button>)
+  return (<button onClick={() => onClick({addLog: setMessages})} >Copy to clipboard</button>)
 }

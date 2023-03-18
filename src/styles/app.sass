@@ -1,28 +1,33 @@
-
+@import "normalize"
+@import "sizes"
+@import "grid"
 $color-gpt: rgb(16,163,127)
+$bg-color: #f0f3fa
 $primary: $color-gpt
-@import "~bootstrap/scss/bootstrap"
+$secondary: lighten($primary, 10%)
 
-//$btn-primary-color
+$btn-color: $color-gpt
+$btn-font-color: white
+$btn-hover-color: darken($btn-color, 10%)
+
+@import "buttons"
+
 body
-  background-color: #f0f3fa
+  background-color: $bg-color
+
 .app-container
-  @extend .d-flex
-  @extend .flex-row
-  @extend .justify-content-center
-  @extend .align-items-center
-  @extend .m-2
-  @extend .mb-3
-  @extend .mt-3
+  @extend .container
+  @extend .row
+  @extend .row-center
+  text-align: center
   min-width: 400px
 
-  .btn-primary
-    color: white
-
-  h1
+  h3
+    @extend .mt-2
     @extend .mb-3
 
   .copy-btn-container
+    @extend .mb-3
     text-align: center
   .message-bus-container
     @extend .mt-3

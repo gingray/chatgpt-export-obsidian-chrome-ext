@@ -1,0 +1,37 @@
+.button,
+button,
+input[type='button'],
+input[type='reset'],
+input[type='submit']
+  background-color: $btn-color
+  border: .1rem solid $btn-color
+  border-radius: .4rem
+  color: $btn-font-color
+  cursor: pointer
+  display: inline-block
+  font-size: 1.1rem
+  font-weight: 700
+  height: 3.8rem
+  letter-spacing: .1rem
+  line-height: 3.8rem
+  padding: 0 3.0rem
+  text-align: center
+  text-decoration: none
+  text-transform: uppercase
+  white-space: nowrap
+
+  &:focus,
+  &:hover
+    background-color: $btn-hover-color
+    border-color: $btn-hover-color
+    color: $btn-font-color
+    outline: 0
+
+  &[disabled]
+    cursor: default
+    opacity: .5
+
+    &:focus,
+    &:hover
+      background-color: $btn-color
+      border-color: $btn-color

@@ -1,9 +1,7 @@
 import React, {useEffect, useState} from "react"
-import {Button, Container} from "react-bootstrap";
 import {CopyBtn} from "./components/CopyBtn";
 import {MessageBus} from "./components/MessageBus";
-import {AliveMessage, PingMessage} from "./core/actions";
-import {ChromeMessage} from "./core/chromeMessage";
+import { PingMessage} from "./core/actions";
 const EXT_PENDING = "pending"
 const EXT_INVALID = "invalid"
 const EXT_VALID = "valid"
@@ -26,14 +24,14 @@ export const App = () => {
     checker().then(r => console.log("fire"))
   }, [])
   return (<div className={'app-container'}>
-    <Container fluid={true}>
-      <h1>ChatGTP to Obsidian content exporter v0.01</h1>
+    <div className={'container-fluid'}>
+      <h3>ChatGTP to Obsidian content exporter v0.01</h3>
 
       <div className={'copy-btn-container'}>
         {show == EXT_VALID && <CopyBtn setMessages={addLog}/>}
         {show == EXT_INVALID && <div>Extension works only in https://chat.openai.com/</div>}
       </div>
       <MessageBus data={messages}/>
-    </Container>
+    </div>
   </div>)
 }
