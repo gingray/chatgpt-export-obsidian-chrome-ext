@@ -38,6 +38,19 @@ const processNode = (node: ContentPayload, ctx: TransformContext): string => {
   }
   if (node.contentType == "li") ctx.level -=1
   if ((node.contentType == "ul" || node.contentType == "ol") && ctx.level == 0) buffer.push(`${OBS_CALLOUT_TOKEN}${MD_NEW_LINE}`)
+  if (node.contentType == "code") {
+    let langType = ""
+    if (node.metadata != null) {
+      const classList = node.metadata["classes"]
+      console.log("classList",classList)
+      langType = classList.filter((item:string) => item.indexOf("language-")!= -1)[0] || ""
+      langType = langType.replace("language-", "")
+    }
+    buffer.push(OBS_CALLOUT_TOKEN + "```" + langType + MD_NEW_LINE)
+    const value = node.value?.split("\n").map((item)=> OBS_CALLOUT_TOKEN + item + MD_NEW_LINE).join("")
+    buffer.push(value)
+    buffer.push(OBS_CALLOUT_TOKEN + "```" + MD_NEW_LINE)
+  }
 
   // let emptyLine = MD_NEW_LINE
   // if (ctx.dialogType === "bot") emptyLine = `${OBS_CALLOUT_TOKEN}${MD_NEW_LINE}`

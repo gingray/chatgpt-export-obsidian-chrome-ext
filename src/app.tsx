@@ -27,7 +27,7 @@ export const App = () => {
   }, [])
   return (<div className={'app-container'}>
     <div className={'container-fluid'}>
-      <h3>ChatGTP to Obsidian content exporter v0.01</h3>
+      <h3>ChatGTP to Obsidian content exporter v0.02</h3>
 
       <div className={'copy-btn-container'}>
         {show == EXT_VALID && <CopyBtn setMessages={addLog}/>}

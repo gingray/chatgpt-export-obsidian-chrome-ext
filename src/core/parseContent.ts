@@ -2,13 +2,13 @@ const OL_TAG = "ol"
 const UL_TAG = "ul"
 const LI_TAG = "li"
 const P_TAG = "p"
+const CODE_TAG = "code"
 
 export const parseContent = (data : NodeListOf<Element>): Array<Conversation> => {
   const items: Array<Conversation> = []
   for (const item of data) {
     if (item.classList.contains("bg-gray-50")) {
-      const innerData = item.querySelectorAll(".markdown.prose > p, .markdown.prose > ol, .markdown.prose > ul")
-      // debugger
+      const innerData = item.querySelectorAll(".markdown.prose > p, .markdown.prose > ol, .markdown.prose > ul, .markdown.prose > pre code")
       const values = Array.from(innerData).map<ContentPayload>((value:Element) => {
         return processNode(value)
       })
@@ -28,6 +28,10 @@ const processNode = (node: Element):ContentPayload => {
   }
   if (compareStr(node.tagName, UL_TAG)){
     return {contentType:"ul", value:null, children: processList(node)}
+  }
+
+  if (compareStr(node.tagName, CODE_TAG)) {
+    return  { contentType: "code", value: node.textContent!, children:[], metadata: { classes: node.classList } }
   }
   return {contentType:"text", value: node.textContent!, children: []}
 
