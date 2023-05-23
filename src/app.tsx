@@ -19,7 +19,9 @@ export const App = () => {
       const [tab] = await chrome.tabs.query({active: true, lastFocusedWindow: true});
       if (tab == null || tab.id == null) return
       // @ts-ignore
-      (chrome.tabs.sendMessage(tab.id, {message: PingMessage}) as Promise<any>).then((r) => setShow(EXT_VALID)).catch((r) => setShow(EXT_INVALID))
+      (chrome.tabs.sendMessage(tab.id, {message: PingMessage}) as Promise<any>).then((r) => setShow(EXT_VALID)).catch((r) => {
+        console.log("error", r)
+        setShow(EXT_INVALID)})
     }
     checker().then(r => console.log("fire"))
   }, [])

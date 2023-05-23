@@ -1,6 +1,6 @@
 {
   "name": "chatgpt-md-export",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "ChatGPT to Obsidian MD",
   "private": true,
   "scripts": {
